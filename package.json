@@ -5,7 +5,7 @@
     "dev": "nodemon --config ./nodemon.json  --delay 2.5 --exec babel-node -- src/app.js",
     "prebuild": "rm -rf build/*",
     "build": "./node_modules/.bin/babel --out-dir=build src",
-    "test": "mocha --compilers js:babel-core/register ./tests/**/*.test.js"
+    "test": ""
   },
   "dependencies": {
     "crypto-js": "^3.1.9-1",
