@@ -1,6 +1,20 @@
 import Extend from '../../classes/Extend'
 import { router, required, expect, list } from '../../decorators'
 
+const obj = {
+  imgList: ['https://ooxx.png'],
+  type: 1,
+  status: 1,
+  description: 'des',
+  autoStop: true,
+  extraInfo: true,
+  endTime: 0,
+  limit: 20,
+  phoneNumber: '13542422222',
+  realName: 'Joephoh',
+  mail: 'joephon@qq.com'
+} 
+
 /**
  * @apiDefine SUBJECT 项目
  * 项目结构
@@ -26,22 +40,29 @@ export default class SubjectController extends Extend {
 
     return super.success({
       list: [
-        {
-          imgList: ['https://ooxx.png'],
-          type: 1,
-          status: 1,
-          description: 'des',
-          autoStop: true,
-          extraInfo: true,
-          endTime: 0,
-          limit: 20,
-          phoneNumber: '13542422222',
-          realName: 'Joephoh',
-          mail: 'joephon@qq.com'
-        }     
+        ...obj    
       ],
       total: 20,
       next: 2
     })
+  }
+
+  /**
+   * 
+   * @api {post} /weapp/subject 创建项目 
+   * @apiGroup SUBJECT
+   * @apiHeader {String} Authorization token 信息
+   * @apiParam {String} description 描述
+   * @apiParam {Number} [type=1] 项目类型 默认1=报名 2=团购
+   */
+  @router.post('/')
+  @required({ body: { description: String }, type: Number })
+  async createSubject(ctx) {
+    const { id } = ctx.decoded
+
+    const subject = {
+      createdBy: id,
+      ...obj,
+    }
   }
 }
