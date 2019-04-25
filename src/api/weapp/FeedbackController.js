@@ -10,7 +10,7 @@ const obj = {
 };
 
 /**
- * @apiDefine FEEABACK 反馈
+ * @apiDefine FEEDBACK 反馈
  * 反馈接口
  */
 @router({ prefix: '/weapp/feedback' })
