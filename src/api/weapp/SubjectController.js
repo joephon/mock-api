@@ -22,7 +22,7 @@ const obj = {
 
 /**
  * @apiDefine SUBJECT 接龙
- * 接龙结构
+ * 接龙接口
  */
 @router({ prefix: '/weapp/subject' })
 export default class SubjectController extends Extend {
@@ -55,6 +55,8 @@ export default class SubjectController extends Extend {
    * @api {post} /weapp/subject 创建接龙
    * @apiGroup SUBJECT
    * @apiHeader {String} Authorization token 信息
+   * @apiParam {String} description 接龙描述
+   * @apiParam {String} formId 用以触发微信消息推送的表单formId
    * @apiParam {Number} [type=1] 接龙类型 默认1=报名 2=团购
    * @apiParam {String[]} [imgList] 图片列表
    * @apiParam {Object[]} [goodsList] 商品列表
@@ -64,10 +66,9 @@ export default class SubjectController extends Extend {
    * @apiParam {Boolean} [needPhoneNumber=false] 报名需要填手机
    * @apiParam {Boolean} [needRealName=false] 报名需要填收货人姓名
    * @apiParam {Boolean} [needEmail=false] 报名需要填写邮箱
-   * @apiParam {String} description 接龙描述
    */
   @router.post('/')
-  @required({ body: { description: String } })
+  @required({ body: { description: String, formId: String } })
   async createSubject(ctx) {
     const { id } = ctx.decoded;
 
@@ -84,7 +85,8 @@ export default class SubjectController extends Extend {
    * @api {put} /weapp/subject/:id 编辑接龙
    * @apiGroup SUBJECT
    * @apiHeader {String} Authorization token 信息
-   * @apiParam {String} description 描述
+   * @apiParam {String} description 接龙描述
+   * @apiParam {String} id 目标接龙id
    * @apiParam {String[]} [imgList] 图片列表
    * @apiParam {Object[]} [goodsList] 商品列表
    * @apiParam {Number} [status=1] 状态
@@ -93,8 +95,6 @@ export default class SubjectController extends Extend {
    * @apiParam {Boolean} [needPhoneNumber=false] 报名需要填手机
    * @apiParam {Boolean} [needRealName=false] 报名需要填收货人姓名
    * @apiParam {Boolean} [needEmail=false] 报名需要填写邮箱
-   * @apiParam {String} description 接龙描述
-   * @apiParam {String} id 目标接龙id
    */
   @router.put('/:id')
   @required({ body: { description: String }, params: { id: String } })
@@ -106,7 +106,7 @@ export default class SubjectController extends Extend {
       ...obj
     };
 
-    return super.success(subject)
+    return super.success(subject);
   }
 
   /**
@@ -116,12 +116,44 @@ export default class SubjectController extends Extend {
    * @apiHeader {String} Authorization token 信息
    * @apiParam {String} id 目标接龙id
    */
-  @router.put('/:id')
+  @router.delete('/:id')
   @required({ params: { id: String } })
   async deleteSubject(ctx) {
     const { id } = ctx.decoded;
 
     return super.success();
+  }
+
+  /**
+   *
+   * @api {post} /weapp/subject/copy/:id 复制接龙
+   * @apiGroup SUBJECT
+   * @apiHeader {String} Authorization token 信息
+   * @apiParam {String} id 目标接龙id
+   */
+  @router.post('/copy/:id')
+  @required({ params: { id: String } })
+  async copySubject(ctx) {
+    const { id } = ctx.decoded;
+
+    return super.success(obj);
+  }
+
+  /**
+   *
+   * @api {post} /weapp/subject/share/:id 生成分享接龙的卡片
+   * @apiGroup SUBJECT
+   * @apiHeader {String} Authorization token 信息
+   * @apiParam {String} id 目标接龙id
+   */
+  @router.post('/share/:id')
+  @required({ params: { id: String } })
+  async copySubject(ctx) {
+    const { id } = ctx.decoded;
+
+    return super.success({
+      url: 'https://ooxx.jpg'
+    });
   }
 }
 
