@@ -1,3 +1,4 @@
+import excel from 'node-excel-export';
 import Extend from '../../classes/Extend'
 import { router, required, expect, list } from '../../decorators'
 
@@ -60,7 +61,7 @@ export default class SubjectController extends Extend {
    * @apiParam {Number} [type=1] 接龙类型 默认1=报名 2=团购
    * @apiParam {String[]} [imgList] 图片列表
    * @apiParam {Object[]} [goodsList] 商品列表
-   * @apiParam {Number} [status=1] 状态
+   * @apiParam {Number} [status=1] 状态 1=解控中 -1=已截止
    * @apiParam {Number} [limit=0] 截止人数 不传默认无限
    * @apiParam {Boolean} [autoStop=false] 自动截止
    * @apiParam {Boolean} [needPhoneNumber=false] 报名需要填手机
@@ -154,6 +155,72 @@ export default class SubjectController extends Extend {
     return super.success({
       url: 'https://ooxx.jpg'
     });
+  }
+
+  /**
+   *
+   * @api {post} /weapp/subject/join/:id 参与接龙
+   * @apiGroup SUBJECT
+   * @apiHeader {String} Authorization token 信息
+   * @apiParam {String} id 目标接龙id
+   * @apiParam {Number} quantities 接龙数量
+   */
+  @router.post('/join/:id')
+  @required({ params: { id: String }, body: { quantities: Number } })
+  async joinSubject(ctx) {
+    const { id } = ctx.decoded;
+
+    return super.success(obj);
+  }
+
+  /**
+   *
+   * @api {get} /weapp/subject/export/:id 导出接龙报表
+   * @apiGroup SUBJECT
+   * @apiHeader {String} Authorization token 信息
+   * @apiParam {String} id 目标接龙id
+   */
+  @router.get('/export/:id')
+  @required({ params: { id: String } })
+  async exportSubject(ctx) {
+    const { id } = ctx.decoded;
+
+    const sheets = [];
+    const sheetName = '接龙导出明细';
+    const sheet = {
+      name: sheetName,
+      data: [obj],
+      specification: {
+        status: {
+          displayName: '状态',
+          headerStyle: {},
+          width: '40',
+          cellFormat(value) {
+            if (value === 1) return '群报名';
+            else if (value === 2) return '团购接龙';
+          }
+        },
+        type: {
+          displayName: '类型',
+          headerStyle: {},
+          width: '20',
+          cellFormat(value) {
+            if (value === 1) return '接龙中';
+            else if (value === 2) return '已截止';
+          }
+        },
+        description: {
+          displayName: '描述信息',
+          headerStyle: {},
+          width: '20'
+        }
+      }
+    };
+
+    sheets.push(sheet);
+    const report = excel.buildExport(sheets);
+    ctx.attachment(`${sheetName}.xlsx`);
+    ctx.body = report;
   }
 }
 
