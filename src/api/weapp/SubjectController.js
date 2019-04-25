@@ -131,9 +131,10 @@ export default class SubjectController extends Extend {
    * @apiGroup SUBJECT
    * @apiHeader {String} Authorization token 信息
    * @apiParam {String} id 目标接龙id
+   * @apiParam {String} formId 用以触发微信消息推送的表单formId
    */
   @router.post('/copy/:id')
-  @required({ params: { id: String } })
+  @required({ params: { id: String }, body: { formId: String } })
   async copySubject(ctx) {
     const { id } = ctx.decoded;
 
@@ -163,10 +164,14 @@ export default class SubjectController extends Extend {
    * @apiGroup SUBJECT
    * @apiHeader {String} Authorization token 信息
    * @apiParam {String} id 目标接龙id
+   * @apiParam {String} formId 用以触发微信消息推送的表单formId
    * @apiParam {Number} quantities 接龙数量
    */
   @router.post('/join/:id')
-  @required({ params: { id: String }, body: { quantities: Number } })
+  @required({
+    params: { id: String },
+    body: { quantities: Number, formId: String }
+  })
   async joinSubject(ctx) {
     const { id } = ctx.decoded;
 
