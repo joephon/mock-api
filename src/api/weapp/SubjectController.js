@@ -12,7 +12,7 @@ const obj = {
   ],
   type: 1,
   status: 1,
-  description: 'des',
+  description: '这里是接龙的描述',
   autoStop: true,
   endTime: 0,
   limit: 20,
@@ -45,9 +45,11 @@ export default class SubjectController extends Extend {
     const { type, status, page, pageSize, sort } = ctx.request.query;
 
     return super.success({
-      list: [...obj],
-      total: 20,
-      next: 2
+      result: [...Array(10).keys()].map((item, index) => ({ ...obj, id: index + 1 })),
+      meta: {
+        total: 20,
+        next: 2
+      }
     });
   }
 
