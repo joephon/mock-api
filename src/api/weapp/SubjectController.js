@@ -55,6 +55,23 @@ export default class SubjectController extends Extend {
 
   /**
    *
+   * @api {get} /weapp/subject/:id 获取接龙
+   * @apiGroup SUBJECT
+   * @apiHeader {String} Authorization token信息
+   * @apiParam {Number} id 接龙id
+   */
+  @router.get('/:id')
+  @expect({ params: { id: String } })
+  @list
+  async getOneSubject(ctx) {
+    const { id } = ctx.params;
+
+    obj.id = id
+    return super.success(obj);
+  }
+
+  /**
+   *
    * @api {post} /weapp/subject 创建接龙
    * @apiGroup SUBJECT
    * @apiHeader {String} Authorization token 信息
